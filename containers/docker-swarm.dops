@@ -26,6 +26,10 @@ context:
     - Use secrets and configs for sensitive and configuration data
     - Define resource reservations and limits under deploy.resources
     - Use overlay networks for multi-host service communication
+    - Use Compose file version 3.8 or later
+    - All services must have deploy configuration with restart_policy
+    - Secrets must use Docker secrets, never environment variables for passwords
+    - Define resource limits for all production services
   context7Libraries:
     - name: docker-swarm
       query: "Docker Swarm stack file, deploy configuration, services, networks, secrets, health checks"
@@ -80,107 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Docker Swarm expert. Update the existing Swarm stack file.
-Preserve existing services and networks. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Production stack with a web app, API, and PostgreSQL database"
-
-```yaml
-version: "3.8"
-
-services:
-  web:
-    image: myapp/web:latest
-    ports:
-      - "80:3000"
-    deploy:
-      replicas: 3
-      update_config:
-        parallelism: 1
-        delay: 10s
-        order: start-first
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 256M
-        reservations:
-          cpus: "0.25"
-          memory: 128M
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - frontend
-
-  api:
-    image: myapp/api:latest
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-    environment:
-      DATABASE_URL: "postgresql://user:password@db:5432/myapp"
-    networks:
-      - frontend
-      - backend
-
-  db:
-    image: postgres:16-alpine
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: myapp
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_password
-    networks:
-      - backend
-
-networks:
-  frontend:
-    driver: overlay
-  backend:
-    driver: overlay
-    internal: true
-
-volumes:
-  db-data:
-
-secrets:
-  db_password:
-    external: true
-```
-
-## Constraints
-
-- Use Compose file version 3.8 or later
-- All services must have deploy configuration with restart_policy
-- Secrets must use Docker secrets, never environment variables for passwords
-- Define resource limits for all production services
-- Use overlay networks for cross-node communication
 
 ## Keywords
 

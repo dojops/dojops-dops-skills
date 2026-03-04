@@ -26,6 +26,11 @@ context:
     - Use file_server for static file serving with browse disabled
     - Configure log output for access and error logging
     - Use handle and handle_path for clean URL routing
+    - Use domain names for automatic HTTPS, not localhost in production
+    - Include security headers for all public-facing sites
+    - Enable response compression for text-based content
+    - Configure health checks for reverse proxy backends
+    - Use handle blocks for clean URL path routing
   context7Libraries:
     - name: caddy
       query: "Caddyfile syntax, reverse_proxy, file_server, TLS, headers, encode, handle directives"
@@ -81,60 +86,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Caddy expert. Update the existing Caddyfile configuration.
-Preserve existing site blocks and directives. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Caddy config serving a static site with API reverse proxy and compression"
-
-```
-example.com {
-	encode gzip zstd
-
-	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		X-Content-Type-Options "nosniff"
-		X-Frame-Options "DENY"
-		Referrer-Policy "strict-origin-when-cross-origin"
-	}
-
-	handle /api/* {
-		reverse_proxy localhost:3000 {
-			header_up X-Real-IP {remote_host}
-			health_uri /health
-			health_interval 30s
-		}
-	}
-
-	handle {
-		root * /var/www/html
-		file_server
-	}
-
-	log {
-		output file /var/log/caddy/access.log
-		format json
-	}
-}
-```
-
-## Constraints
-
-- Use domain names for automatic HTTPS, not localhost in production
-- Include security headers for all public-facing sites
-- Enable response compression for text-based content
-- Configure health checks for reverse proxy backends
-- Use handle blocks for clean URL path routing
 
 ## Keywords
 

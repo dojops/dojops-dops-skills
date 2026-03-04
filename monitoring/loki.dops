@@ -25,6 +25,10 @@ context:
     - Use compactor for automatic log compaction and retention
     - Enable multi-tenancy with auth_enabled when sharing clusters
     - Set query limits to prevent expensive queries
+    - Set retention_period in limits_config for log lifecycle management
+    - Define ingestion rate limits to prevent overload
+    - Use TSDB store for new deployments (not BoltDB)
+    - Configure compactor when retention is enabled
   context7Libraries:
     - name: grafana-loki
       query: "Loki configuration YAML, schema_config, storage_config, ingester, compactor, limits"
@@ -79,75 +83,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Loki expert. Update the existing Loki configuration.
-Preserve existing storage and schema settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Loki configuration with filesystem storage, 30-day retention, and rate limits"
-
-```yaml
-auth_enabled: false
-
-server:
-  http_listen_port: 3100
-
-common:
-  path_prefix: /loki
-  storage:
-    filesystem:
-      chunks_directory: /loki/chunks
-      rules_directory: /loki/rules
-  replication_factor: 1
-  ring:
-    kvstore:
-      store: inmemory
-
-schema_config:
-  configs:
-    - from: "2024-01-01"
-      store: tsdb
-      object_store: filesystem
-      schema: v13
-      index:
-        prefix: index_
-        period: 24h
-
-storage_config:
-  tsdb_shipper:
-    active_index_directory: /loki/tsdb-index
-    cache_location: /loki/tsdb-cache
-
-limits_config:
-  retention_period: 720h
-  ingestion_rate_mb: 10
-  ingestion_burst_size_mb: 20
-  max_query_series: 500
-  max_query_parallelism: 2
-
-compactor:
-  working_directory: /loki/compactor
-  compaction_interval: 10m
-  retention_enabled: true
-  retention_delete_delay: 2h
-```
-
-## Constraints
-
-- Always configure schema_config with version and period
-- Set retention_period in limits_config for log lifecycle management
-- Define ingestion rate limits to prevent overload
-- Use TSDB store for new deployments (not BoltDB)
-- Configure compactor when retention is enabled
 
 ## Keywords
 

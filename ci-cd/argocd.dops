@@ -26,6 +26,11 @@ context:
     - Use Helm or Kustomize for parameterized deployments
     - Set retry strategies for transient sync failures
     - Use finalizers to handle application deletion properly
+    - Always specify apiVersion and kind for Argo CD CRDs
+    - Include finalizers for proper resource cleanup
+    - Sync policies must explicitly set prune and selfHeal
+    - Use targetRevision to pin deployments to specific branches or tags
+    - Define project-level restrictions for production namespaces
   context7Libraries:
     - name: argocd
       query: "Argo CD Application CRD, sync policy, project, ApplicationSet, health checks"
@@ -83,60 +88,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are an Argo CD expert. Update the existing Argo CD application manifest.
-Preserve existing settings and sync policies. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Argo CD Application for a microservice deployed from a Git repo with auto-sync"
-
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: my-microservice
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/org/my-microservice.git
-    targetRevision: main
-    path: k8s/overlays/production
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: production
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
-```
-
-## Constraints
-
-- Always specify apiVersion and kind for Argo CD CRDs
-- Include finalizers for proper resource cleanup
-- Sync policies must explicitly set prune and selfHeal
-- Use targetRevision to pin deployments to specific branches or tags
-- Define project-level restrictions for production namespaces
 
 ## Keywords
 

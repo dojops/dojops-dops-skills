@@ -25,6 +25,11 @@ context:
     - Use keyword type for exact-match fields, text for full-text search
     - Set date format explicitly for timestamp fields
     - Use index aliases for zero-downtime reindexing
+    - Always define explicit mappings for known fields
+    - Use keyword type for fields used in aggregations and filtering
+    - Set appropriate shard count based on expected data volume
+    - Include @timestamp field with date type for time-series data
+    - Use ILM policies for automatic index lifecycle management
   context7Libraries:
     - name: elasticsearch
       query: "Elasticsearch index template, mappings, settings, ILM policy, shard configuration"
@@ -79,74 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are an Elasticsearch expert. Update the existing index template.
-Preserve existing mappings and settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Index template for application logs with timestamp, level, message, and service fields"
-
-```json
-{
-  "index_patterns": ["app-logs-*"],
-  "priority": 100,
-  "template": {
-    "settings": {
-      "number_of_shards": 3,
-      "number_of_replicas": 1,
-      "refresh_interval": "5s",
-      "index.lifecycle.name": "app-logs-policy",
-      "index.lifecycle.rollover_alias": "app-logs"
-    },
-    "mappings": {
-      "properties": {
-        "@timestamp": {
-          "type": "date",
-          "format": "strict_date_optional_time"
-        },
-        "level": {
-          "type": "keyword"
-        },
-        "message": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "service": {
-          "type": "keyword"
-        },
-        "trace_id": {
-          "type": "keyword"
-        },
-        "host": {
-          "type": "keyword"
-        }
-      }
-    }
-  }
-}
-```
-
-## Constraints
-
-- Always define explicit mappings for known fields
-- Use keyword type for fields used in aggregations and filtering
-- Set appropriate shard count based on expected data volume
-- Include @timestamp field with date type for time-series data
-- Use ILM policies for automatic index lifecycle management
 
 ## Keywords
 

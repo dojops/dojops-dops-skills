@@ -25,6 +25,11 @@ context:
     - Use Docker or Kubernetes provider for automatic service discovery
     - Configure health checks for backend services
     - Set timeouts for read, write, and idle connections
+    - Always redirect HTTP to HTTPS in production
+    - Use Let's Encrypt for automatic TLS certificates
+    - Do not expose the dashboard without authentication
+    - Set exposedByDefault to false for Docker provider
+    - Configure access logging for audit and debugging
   context7Libraries:
     - name: traefik
       query: "Traefik v3 static configuration, entrypoints, routers, services, middleware, TLS"
@@ -79,74 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Traefik expert. Update the existing Traefik configuration.
-Preserve existing entrypoints and routers. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Traefik config with HTTP/HTTPS entrypoints, Let's Encrypt, Docker provider, and dashboard"
-
-```yaml
-entryPoints:
-  web:
-    address: ":80"
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-  websecure:
-    address: ":443"
-    http:
-      tls:
-        certResolver: letsencrypt
-
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: admin@example.com
-      storage: /data/acme.json
-      httpChallenge:
-        entryPoint: web
-
-providers:
-  docker:
-    endpoint: "unix:///var/run/docker.sock"
-    exposedByDefault: false
-    network: traefik-public
-
-api:
-  dashboard: true
-  insecure: false
-
-log:
-  level: INFO
-
-accessLog:
-  filePath: /var/log/traefik/access.log
-  bufferingSize: 100
-
-metrics:
-  prometheus:
-    entryPoint: metrics
-```
-
-## Constraints
-
-- Always redirect HTTP to HTTPS in production
-- Use Let's Encrypt for automatic TLS certificates
-- Do not expose the dashboard without authentication
-- Set exposedByDefault to false for Docker provider
-- Configure access logging for audit and debugging
 
 ## Keywords
 

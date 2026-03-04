@@ -26,6 +26,9 @@ context:
     - Use pod-level networking for multi-container communication
     - Map ports explicitly at the pod level
     - Use environment variables from secrets or configmaps
+    - Use fully qualified image names with registry prefix
+    - Set security contexts for least-privilege execution
+    - Ports must be mapped at the pod level for external access
   context7Libraries:
     - name: podman
       query: "Podman play kube, pod YAML, container configuration, rootless containers"
@@ -81,72 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Podman expert. Update the existing Podman pod configuration.
-Preserve existing containers and settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Pod with a web app and Redis sidecar"
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: web-app-pod
-  labels:
-    app: web-app
-spec:
-  containers:
-    - name: web-app
-      image: docker.io/library/node:20-slim
-      ports:
-        - containerPort: 3000
-          hostPort: 3000
-      env:
-        - name: REDIS_URL
-          value: "redis://localhost:6379"
-      resources:
-        limits:
-          memory: "256Mi"
-          cpu: "500m"
-      securityContext:
-        readOnlyRootFilesystem: true
-        runAsNonRoot: true
-
-    - name: redis
-      image: docker.io/library/redis:7-alpine
-      ports:
-        - containerPort: 6379
-      resources:
-        limits:
-          memory: "128Mi"
-          cpu: "250m"
-      volumeMounts:
-        - name: redis-data
-          mountPath: /data
-
-  volumes:
-    - name: redis-data
-      persistentVolumeClaim:
-        claimName: redis-pvc
-```
-
-## Constraints
-
-- Use fully qualified image names with registry prefix
-- Define resource limits for all containers
-- Set security contexts for least-privilege execution
-- Use named volumes for persistent data
-- Ports must be mapped at the pod level for external access
 
 ## Keywords
 

@@ -25,6 +25,10 @@ context:
     - Define restart policies with appropriate attempts and delays
     - Use template stanzas for dynamic configuration from Consul/Vault
     - Set kill_timeout appropriately for graceful shutdown
+    - Services must include health check definitions
+    - Use update stanzas with auto_revert for safe deployments
+    - Define restart policies for failure recovery
+    - Use constraints for datacenter and node targeting
   context7Libraries:
     - name: nomad
       query: "Nomad job spec HCL, task groups, resources, service discovery, update strategy"
@@ -80,93 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Nomad expert. Update the existing Nomad job specification.
-Preserve existing task groups and settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Web application job with 3 instances, health checks, and rolling updates"
-
-```hcl
-job "web-app" {
-  datacenters = ["dc1"]
-  type        = "service"
-
-  update {
-    max_parallel     = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "3m"
-    auto_revert      = true
-    canary           = 0
-  }
-
-  group "web" {
-    count = 3
-
-    network {
-      port "http" {
-        to = 3000
-      }
-    }
-
-    service {
-      name = "web-app"
-      port = "http"
-
-      check {
-        type     = "http"
-        path     = "/health"
-        interval = "10s"
-        timeout  = "2s"
-      }
-    }
-
-    restart {
-      attempts = 3
-      interval = "5m"
-      delay    = "15s"
-      mode     = "delay"
-    }
-
-    task "server" {
-      driver = "docker"
-
-      config {
-        image = "myapp/web:latest"
-        ports = ["http"]
-      }
-
-      resources {
-        cpu    = 500
-        memory = 256
-      }
-
-      env {
-        NODE_ENV = "production"
-      }
-
-      kill_timeout = "30s"
-    }
-  }
-}
-```
-
-## Constraints
-
-- Every task must define resource stanzas with cpu and memory
-- Services must include health check definitions
-- Use update stanzas with auto_revert for safe deployments
-- Define restart policies for failure recovery
-- Use constraints for datacenter and node targeting
 
 ## Keywords
 

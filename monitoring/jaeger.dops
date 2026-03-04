@@ -25,6 +25,11 @@ context:
     - Configure query service with appropriate max_clock_skew_adjustment
     - Use TLS for collector endpoints in production
     - Set appropriate queue sizes and worker counts for collector throughput
+    - Use OTLP receivers for OpenTelemetry compatibility
+    - Configure appropriate batch processor settings for throughput
+    - Set index prefix for Elasticsearch to avoid conflicts
+    - Enable health check endpoints for liveness probes
+    - Use production-grade storage backends, not in-memory
   context7Libraries:
     - name: jaeger
       query: "Jaeger configuration, collector, query, sampling strategies, storage backends, OTLP"
@@ -79,77 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Jaeger expert. Update the existing Jaeger configuration.
-Preserve existing settings and storage config. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Jaeger all-in-one configuration with Elasticsearch storage and adaptive sampling"
-
-```yaml
-service:
-  extensions: [healthcheckv2]
-  pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [jaeger_storage_exporter]
-
-extensions:
-  healthcheckv2:
-    http:
-      endpoint: "0.0.0.0:13133"
-
-receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: "0.0.0.0:4317"
-      http:
-        endpoint: "0.0.0.0:4318"
-
-processors:
-  batch:
-    timeout: 1s
-    send_batch_size: 1024
-
-exporters:
-  jaeger_storage_exporter:
-    trace_storage: es_main
-
-jaeger_storage:
-  backends:
-    es_main:
-      elasticsearch:
-        server_urls: ["http://elasticsearch:9200"]
-        index_prefix: "jaeger"
-        num_shards: 3
-        num_replicas: 1
-        create_index_templates: true
-
-jaeger_query:
-  storage:
-    traces: es_main
-  http:
-    endpoint: "0.0.0.0:16686"
-```
-
-## Constraints
-
-- Use OTLP receivers for OpenTelemetry compatibility
-- Configure appropriate batch processor settings for throughput
-- Set index prefix for Elasticsearch to avoid conflicts
-- Enable health check endpoints for liveness probes
-- Use production-grade storage backends, not in-memory
 
 ## Keywords
 

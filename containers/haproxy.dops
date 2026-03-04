@@ -26,6 +26,11 @@ context:
     - Use ACLs for request routing based on paths or headers
     - Enable stats page for monitoring (with authentication)
     - Set maxconn limits to prevent resource exhaustion
+    - Always include global and defaults sections
+    - Set timeouts for connect, client, and server
+    - Enable health checks on all backend servers
+    - Use ACLs for path-based routing instead of multiple frontends
+    - Stats page must require authentication
   context7Libraries:
     - name: haproxy
       query: "HAProxy configuration, frontend, backend, ACLs, health checks, SSL termination, load balancing"
@@ -81,81 +86,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are an HAProxy expert. Update the existing HAProxy configuration.
-Preserve existing frontends and backends. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "HAProxy config with HTTP frontend, round-robin backend, health checks, and stats page"
-
-```
-global
-    log         /dev/log local0
-    log         /dev/log local1 notice
-    maxconn     4096
-    user        haproxy
-    group       haproxy
-    daemon
-
-defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
-    option  forwardfor
-    timeout connect 5s
-    timeout client  30s
-    timeout server  30s
-    retries 3
-
-frontend http_front
-    bind *:80
-    default_backend app_servers
-
-    acl is_api path_beg /api
-    use_backend api_servers if is_api
-
-backend app_servers
-    balance roundrobin
-    option httpchk GET /health
-    http-check expect status 200
-
-    server app1 10.0.0.1:3000 check inter 10s fall 3 rise 2
-    server app2 10.0.0.2:3000 check inter 10s fall 3 rise 2
-    server app3 10.0.0.3:3000 check inter 10s fall 3 rise 2
-
-backend api_servers
-    balance leastconn
-    option httpchk GET /health
-    http-check expect status 200
-
-    server api1 10.0.1.1:8080 check inter 10s fall 3 rise 2
-    server api2 10.0.1.2:8080 check inter 10s fall 3 rise 2
-
-listen stats
-    bind *:8404
-    stats enable
-    stats uri /stats
-    stats refresh 10s
-    stats auth admin:password
-```
-
-## Constraints
-
-- Always include global and defaults sections
-- Set timeouts for connect, client, and server
-- Enable health checks on all backend servers
-- Use ACLs for path-based routing instead of multiple frontends
-- Stats page must require authentication
 
 ## Keywords
 

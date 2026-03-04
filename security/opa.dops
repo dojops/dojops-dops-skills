@@ -26,6 +26,11 @@ context:
     - Add metadata annotations for documentation and IDE support
     - Test policies with input mocking and opa test
     - Use comprehensions and built-in functions for complex logic
+    - Always declare a package for policy organization
+    - Use deny rules that return descriptive error messages
+    - Import rego.v1 for modern Rego syntax
+    - Write rules that check specific fields, not broad object matches
+    - Include comments explaining the policy intent
   context7Libraries:
     - name: opa
       query: "OPA Rego policy syntax, rules, packages, deny patterns, Kubernetes admission control"
@@ -81,64 +86,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are an OPA expert. Update the existing Rego policy.
-Preserve existing rules and package structure. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Kubernetes admission policy that denies privileged containers and requires resource limits"
-
-```rego
-package kubernetes.admission
-
-import rego.v1
-
-deny contains msg if {
-    input.request.kind.kind == "Pod"
-    some container in input.request.object.spec.containers
-    container.securityContext.privileged == true
-    msg := sprintf("Privileged containers are not allowed: %s", [container.name])
-}
-
-deny contains msg if {
-    input.request.kind.kind == "Pod"
-    some container in input.request.object.spec.containers
-    not container.resources.limits.memory
-    msg := sprintf("Container %s must define memory limits", [container.name])
-}
-
-deny contains msg if {
-    input.request.kind.kind == "Pod"
-    some container in input.request.object.spec.containers
-    not container.resources.limits.cpu
-    msg := sprintf("Container %s must define CPU limits", [container.name])
-}
-
-deny contains msg if {
-    input.request.kind.kind == "Pod"
-    some container in input.request.object.spec.containers
-    container.image
-    not contains(container.image, ":")
-    msg := sprintf("Container %s must use a tagged image, not :latest", [container.name])
-}
-```
-
-## Constraints
-
-- Always declare a package for policy organization
-- Use deny rules that return descriptive error messages
-- Import rego.v1 for modern Rego syntax
-- Write rules that check specific fields, not broad object matches
-- Include comments explaining the policy intent
 
 ## Keywords
 

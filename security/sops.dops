@@ -25,6 +25,11 @@ context:
     - Set key groups for threshold-based decryption requirements
     - Organize rules from most specific to least specific (first match wins)
     - Include PGP or age keys as backup decryption methods
+    - Order creation_rules from most specific to least specific
+    - Use encrypted_regex to avoid encrypting non-secret fields
+    - Include at least one backup decryption key (age or PGP)
+    - Never include actual secret values in the SOPS config file
+    - Use cloud KMS for production environments
   context7Libraries:
     - name: sops
       query: "SOPS .sops.yaml configuration, creation_rules, KMS, age, PGP, encrypted_regex"
@@ -79,48 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a SOPS expert. Update the existing SOPS configuration.
-Preserve existing creation rules and keys. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "SOPS config with AWS KMS for production, age key for development, encrypting only secret values"
-
-```yaml
-creation_rules:
-  - path_regex: environments/production/.*\.yaml$
-    encrypted_regex: "^(password|secret|token|key|apiKey|connectionString)$"
-    kms: "arn:aws:kms:us-east-1:123456789:key/abc-def-123"
-    age: "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
-
-  - path_regex: environments/staging/.*\.yaml$
-    encrypted_regex: "^(password|secret|token|key|apiKey|connectionString)$"
-    kms: "arn:aws:kms:us-east-1:123456789:key/xyz-789-456"
-
-  - path_regex: environments/development/.*\.yaml$
-    encrypted_regex: "^(password|secret|token|key|apiKey|connectionString)$"
-    age: "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
-
-  - path_regex: secrets/.*\.yaml$
-    kms: "arn:aws:kms:us-east-1:123456789:key/abc-def-123"
-```
-
-## Constraints
-
-- Order creation_rules from most specific to least specific
-- Use encrypted_regex to avoid encrypting non-secret fields
-- Include at least one backup decryption key (age or PGP)
-- Never include actual secret values in the SOPS config file
-- Use cloud KMS for production environments
 
 ## Keywords
 

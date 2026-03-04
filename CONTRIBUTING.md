@@ -97,10 +97,9 @@ update:
 After the frontmatter, include these required sections:
 
 - **`## Prompt`** — Expert role description with template variables: `{outputGuidance}`, `{bestPractices}`, `{context7Docs}`, `{projectContext}`
-- **`## Update Prompt`** — Update instructions with `{existingContent}` variable
-- **`## Examples`** — At least one realistic, production-ready example
-- **`## Constraints`** — 4-6 rules for generation quality
 - **`## Keywords`** — Technology name and aliases for agent routing
+
+> **Note:** Update mode is handled automatically by the v2 prompt compiler. Best practices and constraints should be defined in `context.bestPractices` in the frontmatter.
 
 ### 3. Validate
 
@@ -120,11 +119,9 @@ dojops --tool <category>/<tool-name>.dops "test prompt"
 
 - [ ] `meta.name` matches filename (without `.dops` extension)
 - [ ] `meta.version` is `2.0.0`
-- [ ] `context.bestPractices` has at least 7 entries
+- [ ] `context.bestPractices` has at least 7 entries (include both best practices and constraints)
 - [ ] `verification` section uses structural or binary checks
 - [ ] `risk.level` has an accurate `rationale`
-- [ ] `## Examples` shows realistic, production-ready output
-- [ ] `## Constraints` has 4-6 rules
 - [ ] `## Keywords` includes the tool name and common aliases
 - [ ] `node scripts/validate.mjs` passes
 

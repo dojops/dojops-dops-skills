@@ -25,6 +25,10 @@ context:
     - Use contexts for environment variable management across projects
     - Implement workflow filters for branch/tag-based execution
     - Use Docker layer caching for container build jobs
+    - Jobs must specify an executor (Docker, machine, or macos)
+    - Use orbs for common integrations instead of custom scripts
+    - Store test results for CircleCI insights
+    - Use workflow filters for branch-specific job execution
   context7Libraries:
     - name: circleci
       query: "CircleCI config.yml syntax, orbs, workflows, jobs, executors, caching"
@@ -82,91 +86,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a CircleCI expert. Update the existing CircleCI configuration.
-Preserve existing jobs and workflows. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "CI pipeline for a Python project with linting, testing, and Docker image build"
-
-```yaml
-version: 2.1
-
-orbs:
-  python: circleci/python@2.1
-
-executors:
-  default:
-    docker:
-      - image: cimg/python:3.12
-
-jobs:
-  lint:
-    executor: default
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - run:
-          name: Run linter
-          command: |
-            pip install ruff
-            ruff check .
-
-  test:
-    executor: default
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - run:
-          name: Run tests
-          command: pytest --junitxml=test-results/results.xml
-      - store_test_results:
-          path: test-results
-
-  build-image:
-    docker:
-      - image: cimg/base:current
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build Docker image
-          command: docker build -t myapp:${CIRCLE_SHA1} .
-
-workflows:
-  build-and-test:
-    jobs:
-      - lint
-      - test:
-          requires:
-            - lint
-      - build-image:
-          requires:
-            - test
-          filters:
-            branches:
-              only: main
-```
-
-## Constraints
-
-- Use CircleCI 2.1 config version
-- Jobs must specify an executor (Docker, machine, or macos)
-- Use orbs for common integrations instead of custom scripts
-- Store test results for CircleCI insights
-- Use workflow filters for branch-specific job execution
 
 ## Keywords
 

@@ -26,6 +26,10 @@ context:
     - Apply consistent tagging using AWS::CloudFormation::Stack tags
     - Use !Ref, !GetAtt, and !Sub for dynamic references
     - Organize resources logically with comments
+    - Use Parameters for all configurable values
+    - No hardcoded AWS account IDs or credentials
+    - Apply tags to all taggable resources
+    - Use !Sub for string interpolation with variable references
   context7Libraries:
     - name: aws-cloudformation
       query: "CloudFormation template syntax, resources, parameters, outputs, intrinsic functions, mappings"
@@ -83,98 +87,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are an AWS CloudFormation expert. Update the existing CloudFormation template.
-Preserve existing resources and parameters. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "VPC with public and private subnets, NAT gateway, and security groups"
-
-```yaml
-AWSTemplateFormatVersion: "2010-09-09"
-Description: "VPC with public and private subnets"
-
-Parameters:
-  EnvironmentName:
-    Type: String
-    Default: production
-    AllowedValues: [development, staging, production]
-  VpcCIDR:
-    Type: String
-    Default: "10.0.0.0/16"
-
-Resources:
-  VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: !Ref VpcCIDR
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      Tags:
-        - Key: Name
-          Value: !Sub "${EnvironmentName}-vpc"
-
-  PublicSubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: "10.0.1.0/24"
-      AvailabilityZone: !Select [0, !GetAZs ""]
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: !Sub "${EnvironmentName}-public-subnet"
-
-  PrivateSubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: "10.0.2.0/24"
-      AvailabilityZone: !Select [0, !GetAZs ""]
-      Tags:
-        - Key: Name
-          Value: !Sub "${EnvironmentName}-private-subnet"
-
-  InternetGateway:
-    Type: AWS::EC2::InternetGateway
-    Properties:
-      Tags:
-        - Key: Name
-          Value: !Sub "${EnvironmentName}-igw"
-
-  InternetGatewayAttachment:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      VpcId: !Ref VPC
-      InternetGatewayId: !Ref InternetGateway
-
-Outputs:
-  VpcId:
-    Description: VPC ID
-    Value: !Ref VPC
-    Export:
-      Name: !Sub "${EnvironmentName}-VpcId"
-  PublicSubnetId:
-    Description: Public Subnet ID
-    Value: !Ref PublicSubnet
-```
-
-## Constraints
-
-- Always include AWSTemplateFormatVersion and Description
-- Use Parameters for all configurable values
-- No hardcoded AWS account IDs or credentials
-- Apply tags to all taggable resources
-- Use !Sub for string interpolation with variable references
 
 ## Keywords
 

@@ -25,6 +25,11 @@ context:
     - Set appropriate default and max TTLs for secrets and tokens
     - Enable TLS for all listener endpoints
     - Use integrated storage (Raft) for production deployments
+    - Always use least-privilege access with explicit deny where needed
+    - Never grant root or sudo capabilities in application policies
+    - Use path wildcards carefully — prefer explicit paths over broad globs
+    - Include token self-management paths for operational use
+    - Separate policies by team or service for clear access boundaries
   context7Libraries:
     - name: vault
       query: "Vault HCL configuration, policy syntax, server config, storage backend, auth methods, secrets engines"
@@ -80,59 +85,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Vault expert. Update the existing Vault configuration.
-Preserve existing policies and settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Vault policy for a payments team with read access to secrets and database credentials"
-
-```hcl
-# Payments team policy — read-only access to payment secrets
-path "secret/data/payments/*" {
-  capabilities = ["read", "list"]
-}
-
-path "secret/metadata/payments/*" {
-  capabilities = ["list"]
-}
-
-# Database credential generation
-path "database/creds/payments-readonly" {
-  capabilities = ["read"]
-}
-
-# Allow token self-management
-path "auth/token/lookup-self" {
-  capabilities = ["read"]
-}
-
-path "auth/token/renew-self" {
-  capabilities = ["update"]
-}
-
-# Deny access to other team secrets
-path "secret/data/platform/*" {
-  capabilities = ["deny"]
-}
-```
-
-## Constraints
-
-- Always use least-privilege access with explicit deny where needed
-- Never grant root or sudo capabilities in application policies
-- Use path wildcards carefully — prefer explicit paths over broad globs
-- Include token self-management paths for operational use
-- Separate policies by team or service for clear access boundaries
 
 ## Keywords
 

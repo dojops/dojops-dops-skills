@@ -26,6 +26,10 @@ context:
     - Use parallel stages for independent tasks to reduce build time
     - Pin tool versions in the tools block (maven, jdk, nodejs)
     - Use shared libraries for reusable pipeline logic
+    - Each stage must have descriptive names
+    - Credentials must use the credentials() helper, never hardcode secrets
+    - Include post blocks for error handling and cleanup
+    - Use when directives for conditional stage execution
   context7Libraries:
     - name: jenkins
       query: "Jenkins declarative pipeline syntax, stages, steps, agent, post actions, shared libraries"
@@ -80,94 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Jenkins CI/CD expert. Update the existing Jenkinsfile.
-Preserve existing stages and settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "CI pipeline for a Java Maven project with build, test, and deploy stages"
-
-```groovy
-pipeline {
-    agent any
-
-    tools {
-        maven 'Maven-3.9'
-        jdk 'JDK-17'
-    }
-
-    environment {
-        MAVEN_OPTS = '-Xmx1024m'
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'mvn clean compile -B'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test -B'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests -B'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-            }
-        }
-
-        stage('Deploy') {
-            when {
-                branch 'main'
-            }
-            steps {
-                sh 'mvn deploy -DskipTests -B'
-            }
-        }
-    }
-
-    post {
-        failure {
-            echo 'Pipeline failed!'
-        }
-        cleanup {
-            cleanWs()
-        }
-    }
-}
-```
-
-## Constraints
-
-- Use declarative pipeline syntax unless scripted is explicitly requested
-- Each stage must have descriptive names
-- Credentials must use the credentials() helper, never hardcode secrets
-- Include post blocks for error handling and cleanup
-- Use when directives for conditional stage execution
 
 ## Keywords
 

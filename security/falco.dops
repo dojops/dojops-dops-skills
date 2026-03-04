@@ -25,6 +25,11 @@ context:
     - Include output templates with relevant context fields
     - Tag rules with applicable compliance frameworks (mitre, pci, soc2)
     - Use append rules to extend default Falco rules without modifying them
+    - Use macros for reusable condition components
+    - Set priority based on security impact severity
+    - Include relevant context fields in output templates
+    - Tag rules with MITRE ATT&CK techniques where applicable
+    - Use lists to maintain groups of related values
   context7Libraries:
     - name: falco
       query: "Falco rules YAML syntax, macros, lists, conditions, output fields, priority levels"
@@ -79,80 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Falco expert. Update the existing Falco rules configuration.
-Preserve existing rules and macros. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Falco rules for detecting suspicious container activity: shell spawns, sensitive file access, and network tools"
-
-```yaml
-- list: sensitive_paths
-  items: [/etc/shadow, /etc/passwd, /etc/sudoers, /root/.ssh]
-
-- list: network_tools
-  items: [nc, ncat, nmap, wget, curl]
-
-- macro: container
-  condition: container.id != host
-
-- macro: spawned_process
-  condition: evt.type in (execve, execveat) and evt.dir = <
-
-- rule: Shell Spawned in Container
-  desc: Detect shell execution inside a container
-  condition: >
-    spawned_process and container and
-    proc.name in (bash, sh, zsh, dash, ksh)
-  output: >
-    Shell spawned in container
-    (user=%user.name container=%container.name
-    shell=%proc.name parent=%proc.pname
-    cmdline=%proc.cmdline image=%container.image.repository)
-  priority: WARNING
-  tags: [container, shell, mitre_execution]
-
-- rule: Sensitive File Access in Container
-  desc: Detect read access to sensitive files in containers
-  condition: >
-    container and open_read and
-    fd.name in (sensitive_paths)
-  output: >
-    Sensitive file opened in container
-    (user=%user.name file=%fd.name container=%container.name
-    image=%container.image.repository)
-  priority: ERROR
-  tags: [container, filesystem, mitre_credential_access]
-
-- rule: Network Tool Executed in Container
-  desc: Detect execution of network reconnaissance tools
-  condition: >
-    spawned_process and container and
-    proc.name in (network_tools)
-  output: >
-    Network tool executed in container
-    (user=%user.name tool=%proc.name container=%container.name
-    cmdline=%proc.cmdline image=%container.image.repository)
-  priority: NOTICE
-  tags: [container, network, mitre_discovery]
-```
-
-## Constraints
-
-- Use macros for reusable condition components
-- Set priority based on security impact severity
-- Include relevant context fields in output templates
-- Tag rules with MITRE ATT&CK techniques where applicable
-- Use lists to maintain groups of related values
 
 ## Keywords
 

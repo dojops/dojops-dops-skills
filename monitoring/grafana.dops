@@ -26,6 +26,10 @@ context:
     - Include a description and tags for dashboard discoverability
     - Define alert rules on critical metric panels
     - Use panel links for drill-down navigation between dashboards
+    - Every panel must have a title and appropriate unit
+    - Set thresholds on stat and gauge panels for visual alerting
+    - Use consistent gridPos values for panel layout
+    - Include datasource references in all query targets
   context7Libraries:
     - name: grafana
       query: "Grafana dashboard JSON model, panels, targets, templating, variables, provisioning"
@@ -80,115 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Grafana expert. Update the existing Grafana dashboard configuration.
-Preserve existing panels and variables. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Dashboard for HTTP API metrics with request rate, latency, and error rate panels"
-
-```json
-{
-  "title": "API Metrics",
-  "description": "HTTP API request metrics overview",
-  "tags": ["api", "http", "production"],
-  "timezone": "browser",
-  "refresh": "30s",
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
-  "templating": {
-    "list": [
-      {
-        "name": "datasource",
-        "type": "datasource",
-        "query": "prometheus"
-      },
-      {
-        "name": "namespace",
-        "type": "query",
-        "datasource": "${datasource}",
-        "query": "label_values(http_requests_total, namespace)"
-      }
-    ]
-  },
-  "panels": [
-    {
-      "title": "Request Rate",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
-      "targets": [
-        {
-          "expr": "sum(rate(http_requests_total{namespace=\"$namespace\"}[5m])) by (method)",
-          "legendFormat": "{{ method }}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        }
-      }
-    },
-    {
-      "title": "P99 Latency",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{namespace=\"$namespace\"}[5m])) by (le))",
-          "legendFormat": "p99"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s"
-        }
-      }
-    },
-    {
-      "title": "Error Rate",
-      "type": "stat",
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
-      "targets": [
-        {
-          "expr": "sum(rate(http_requests_total{namespace=\"$namespace\", status=~\"5..\"}[5m])) / sum(rate(http_requests_total{namespace=\"$namespace\"}[5m])) * 100",
-          "legendFormat": "Error %"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "thresholds": {
-            "steps": [
-              { "value": 0, "color": "green" },
-              { "value": 1, "color": "yellow" },
-              { "value": 5, "color": "red" }
-            ]
-          }
-        }
-      }
-    }
-  ]
-}
-```
-
-## Constraints
-
-- Use template variables for datasource selection
-- Every panel must have a title and appropriate unit
-- Set thresholds on stat and gauge panels for visual alerting
-- Use consistent gridPos values for panel layout
-- Include datasource references in all query targets
 
 ## Keywords
 

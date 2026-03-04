@@ -25,6 +25,11 @@ context:
     - Configure output formats (table, json, sarif) for CI integration
     - Set timeout appropriate for large image or filesystem scans
     - Enable SBOM generation for supply chain security
+    - Set severity filter to reduce noise in CI pipelines
+    - Enable ignore-unfixed to skip vulnerabilities without available patches
+    - Configure skip-dirs for large dependency directories
+    - Set appropriate timeout for image scanning workloads
+    - Use SARIF format for integration with GitHub Code Scanning
   context7Libraries:
     - name: trivy
       query: "Trivy configuration YAML, scanner options, severity filters, ignore rules, output formats"
@@ -79,71 +84,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Trivy expert. Update the existing Trivy configuration.
-Preserve existing settings and ignore rules. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "Trivy config for CI pipeline scanning container images and IaC with SARIF output"
-
-```yaml
-scan:
-  scanners:
-    - vuln
-    - misconfig
-    - secret
-  severity:
-    - CRITICAL
-    - HIGH
-  skip-dirs:
-    - node_modules
-    - .git
-    - vendor
-  skip-files:
-    - "**/*.test.ts"
-    - "**/*.spec.ts"
-
-vulnerability:
-  type:
-    - os
-    - library
-  ignore-unfixed: true
-
-misconfig:
-  include-non-failures: false
-  checks-bundle-repository: ghcr.io/aquasecurity/trivy-checks
-
-secret:
-  config: trivy-secret.yaml
-
-format: sarif
-output: trivy-results.sarif
-timeout: 10m
-
-db:
-  skip-update: false
-  download-java-db: true
-
-cache:
-  dir: /tmp/trivy-cache
-```
-
-## Constraints
-
-- Set severity filter to reduce noise in CI pipelines
-- Enable ignore-unfixed to skip vulnerabilities without available patches
-- Configure skip-dirs for large dependency directories
-- Set appropriate timeout for image scanning workloads
-- Use SARIF format for integration with GitHub Code Scanning
 
 ## Keywords
 

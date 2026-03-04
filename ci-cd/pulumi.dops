@@ -26,6 +26,11 @@ context:
     - Use ComponentResource for logical groupings of related resources
     - Handle async operations properly with pulumi.output
     - Use stack references for multi-stack architectures
+    - Use TypeScript with proper type annotations
+    - Export all important resource attributes as stack outputs
+    - No hardcoded credentials or secrets in code
+    - Use pulumi.Config for environment-specific values
+    - Import only the required provider packages
   context7Libraries:
     - name: pulumi
       query: "Pulumi TypeScript SDK, resource creation, stack outputs, config, component resources"
@@ -81,69 +86,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are a Pulumi expert. Update the existing Pulumi TypeScript code.
-Preserve existing resources and exports. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "S3 bucket with website hosting on AWS"
-
-```typescript
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
-
-const config = new pulumi.Config();
-const environment = config.get("environment") || "production";
-
-const bucket = new aws.s3.Bucket("website-bucket", {
-  website: {
-    indexDocument: "index.html",
-    errorDocument: "error.html",
-  },
-  tags: {
-    Environment: environment,
-    ManagedBy: "pulumi",
-  },
-});
-
-const bucketPolicy = new aws.s3.BucketPolicy("website-policy", {
-  bucket: bucket.id,
-  policy: bucket.arn.apply((arn) =>
-    JSON.stringify({
-      Version: "2012-10-17",
-      Statement: [
-        {
-          Sid: "PublicReadGetObject",
-          Effect: "Allow",
-          Principal: "*",
-          Action: "s3:GetObject",
-          Resource: `${arn}/*`,
-        },
-      ],
-    })
-  ),
-});
-
-export const bucketName = bucket.id;
-export const websiteUrl = bucket.websiteEndpoint;
-```
-
-## Constraints
-
-- Use TypeScript with proper type annotations
-- Export all important resource attributes as stack outputs
-- No hardcoded credentials or secrets in code
-- Use pulumi.Config for environment-specific values
-- Import only the required provider packages
 
 ## Keywords
 

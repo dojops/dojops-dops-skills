@@ -25,6 +25,10 @@ context:
     - Use variable groups and key vault integration for secrets
     - Define stages for multi-environment deployments
     - Use condition expressions for conditional step execution
+    - Use stages for multi-environment pipelines
+    - Secrets must use variable groups or Azure Key Vault, never inline
+    - Use task versioning (e.g., UseDotNet@2) for reproducibility
+    - Include displayName for all steps and stages
   context7Libraries:
     - name: azure-pipelines
       query: "Azure Pipelines YAML syntax, stages, jobs, steps, templates, variables, triggers"
@@ -79,96 +83,6 @@ Follow these best practices:
 {context7Docs}
 
 Project context: {projectContext}
-
-## Update Prompt
-
-You are an Azure Pipelines expert. Update the existing pipeline configuration.
-Preserve existing stages and settings. Only add/modify what is requested.
-
-{outputGuidance}
-
---- EXISTING CONFIGURATION ---
-{existingContent}
---- END EXISTING CONFIGURATION ---
-
-## Examples
-
-Given: "CI/CD pipeline for a .NET application with build, test, and deploy to Azure App Service"
-
-```yaml
-trigger:
-  branches:
-    include:
-      - main
-  paths:
-    exclude:
-      - "*.md"
-
-pr:
-  branches:
-    include:
-      - main
-
-pool:
-  vmImage: "ubuntu-latest"
-
-variables:
-  buildConfiguration: "Release"
-  dotnetVersion: "8.0.x"
-
-stages:
-  - stage: Build
-    displayName: "Build & Test"
-    jobs:
-      - job: BuildJob
-        steps:
-          - task: UseDotNet@2
-            displayName: "Install .NET SDK"
-            inputs:
-              packageType: sdk
-              version: $(dotnetVersion)
-
-          - script: dotnet restore
-            displayName: "Restore dependencies"
-
-          - script: dotnet build --configuration $(buildConfiguration) --no-restore
-            displayName: "Build"
-
-          - script: dotnet test --configuration $(buildConfiguration) --no-build --logger trx
-            displayName: "Run tests"
-
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: "VSTest"
-              testResultsFiles: "**/*.trx"
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathToPublish: "$(Build.ArtifactStagingDirectory)"
-              artifactName: "drop"
-
-  - stage: Deploy
-    displayName: "Deploy to Production"
-    dependsOn: Build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    jobs:
-      - deployment: DeployJob
-        environment: "production"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - script: echo "Deploying to production"
-                  displayName: "Deploy"
-```
-
-## Constraints
-
-- Always define trigger and pr sections
-- Use stages for multi-environment pipelines
-- Secrets must use variable groups or Azure Key Vault, never inline
-- Use task versioning (e.g., UseDotNet@2) for reproducibility
-- Include displayName for all steps and stages
 
 ## Keywords
 
