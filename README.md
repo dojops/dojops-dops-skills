@@ -11,12 +11,12 @@ Community collection of `.dops v2` tool files for [DojOps](https://github.com/do
 
 This repository contains 36 `.dops v2` tool files across 5 categories:
 
-- **12 built-in tools** — Copies of the tools shipped with DojOps
+- **13 built-in tools** — Copies of the tools shipped with DojOps
 - **24 community tools** — Additional DevOps tools for CI/CD, containers, monitoring, and security
 
 ## Tool Catalog
 
-### Built-in (12)
+### Built-in (13)
 
 | Tool | Description |
 |------|-------------|

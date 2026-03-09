@@ -4,7 +4,7 @@ kind: tool
 
 meta:
   name: pulumi
-  version: 2.0.0
+  version: 2.1.0
   description: "Generate Pulumi infrastructure-as-code in TypeScript"
   author: dojops
   license: MIT

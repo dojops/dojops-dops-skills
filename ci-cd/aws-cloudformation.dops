@@ -4,7 +4,7 @@ kind: tool
 
 meta:
   name: aws-cloudformation
-  version: 2.0.0
+  version: 2.1.0
   description: "Generate AWS CloudFormation infrastructure templates"
   author: dojops
   license: MIT
