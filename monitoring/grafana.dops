@@ -4,173 +4,69 @@ kind: tool
 
 meta:
   name: grafana
-  version: 2.1.0
-  description: "Generate Grafana dashboards, provisioning configurations, and alert rules"
+  version: 2.2.0
+  description: "Generate Grafana dashboard JSON configurations"
   author: dojops
   license: MIT
-  tags: [monitoring, grafana, dashboard, visualization, metrics, provisioning, alerting, observability, panels]
+  tags: [grafana, dashboard, monitoring, observability, visualization]
 
 context:
   technology: Grafana
   fileFormat: json
   outputGuidance: |
-    Generate Grafana configuration files as a JSON object with file paths as keys and file contents as string values.
-    Format: { "files": { "dashboards/dashboard.json": "content...", "provisioning/datasources/datasource.yml": "content...", "provisioning/dashboards/provider.yml": "content..." } }
-    At least one file key is required. Files are optional based on the request:
-      - dashboards/<name>.json — Dashboard JSON model with panels, templating, and annotations
-      - provisioning/datasources/datasource.yml — Datasource provisioning YAML (Prometheus, Loki, Elasticsearch, etc.)
-      - provisioning/dashboards/provider.yml — Dashboard provider YAML (auto-load dashboards from filesystem)
-      - provisioning/alerting/rules.yml — Grafana Unified Alerting rules provisioning
-    Dashboard JSON must be a valid Grafana dashboard model. Provisioning files must be valid YAML.
-    Do NOT output raw JSON or YAML — use the JSON wrapper to enable multi-file output.
+    Generate a complete Grafana dashboard JSON model.
+    Output raw JSON content directly — do NOT wrap in code fences or additional JSON layers.
+    The output must be valid Grafana dashboard JSON importable via Grafana UI or provisioning API.
 
-    === DASHBOARD JSON MODEL (dashboards/*.json) ===
-    Required top-level fields:
-      {
-        "uid": "unique-dashboard-id",
-        "title": "Dashboard Title",
-        "tags": ["service", "monitoring"],
-        "timezone": "browser",
-        "editable": true,
-        "fiscalYearStartMonth": 0,
-        "graphTooltip": 1,
-        "panels": [ ... ],
-        "templating": { "list": [ ... ] },
-        "annotations": { "list": [ ... ] },
-        "time": { "from": "now-6h", "to": "now" },
-        "refresh": "30s",
-        "schemaVersion": 39,
-        "version": 1
-      }
+    Structure the dashboard with:
+    - Dashboard metadata: title, description, tags, timezone, time range
+    - Templating variables: datasource, namespace, instance, interval
+    - Rows organized by logical grouping (overview, resources, errors, latency)
+    - Panels with appropriate visualization types (time series, stat, gauge, table, heatmap)
+    - Proper PromQL/Loki/InfluxQL queries matching the data source
 
-    === PANEL TYPES ===
-    Common panel types and their key fields:
-      - timeseries — Time-series graph with fieldConfig.defaults.custom (lineWidth, fillOpacity, drawStyle)
-      - stat — Single-value display with fieldConfig.defaults.thresholds, reduceOptions
-      - gauge — Gauge visualization with min/max/thresholds
-      - table — Tabular data with column overrides and transformations
-      - row — Collapsible row for panel grouping (type: "row", collapsed: true/false, panels: [...])
-      - logs — Log viewer panel (Loki/Elasticsearch datasource)
-      - barchart — Bar chart with categorical data
-      - heatmap — Heatmap visualization for distribution data (histogram_quantile)
-      - alertlist — Panel showing alert states
+    Detect the monitoring target from context:
+    - **Application monitoring**: Request rate, error rate, latency percentiles (RED method)
+    - **Infrastructure**: CPU, memory, disk, network utilization (USE method)
+    - **Kubernetes**: Pod resource usage, node capacity, deployment health
+    - **Database**: Query latency, connections, cache hit ratio, replication lag
+    - **Business metrics**: Custom application KPIs with stat panels
 
-    === PANEL STRUCTURE ===
-    Every panel must include:
-      {
-        "type": "timeseries",
-        "title": "Panel Title",
-        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
-        "datasource": { "type": "prometheus", "uid": "${datasource}" },
-        "targets": [
-          { "expr": "rate(http_requests_total[5m])", "legendFormat": "{{instance}}", "refId": "A" }
-        ],
-        "fieldConfig": {
-          "defaults": { "unit": "reqps", "thresholds": { "steps": [...] } },
-          "overrides": []
-        }
-      }
-
-    === TEMPLATE VARIABLES ===
-    Templating list entries for interactive filtering:
-      - datasource — Datasource picker (type: "datasource", query: "prometheus")
-      - query — Label values from Prometheus (type: "query", query: "label_values(up, instance)")
-      - custom — Fixed options (type: "custom", query: "5m,15m,30m,1h")
-      - interval — Auto-interval variable (type: "interval", auto: true)
-
-    === DATASOURCE PROVISIONING (provisioning/datasources/*.yml) ===
-    Structure:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          access: proxy
-          url: http://prometheus:9090
-          isDefault: true
-          jsonData:
-            timeInterval: 15s
-
-    === DASHBOARD PROVIDER (provisioning/dashboards/*.yml) ===
-    Structure:
-      apiVersion: 1
-      providers:
-        - name: default
-          orgId: 1
-          folder: ''
-          type: file
-          options:
-            path: /var/lib/grafana/dashboards
-            foldersFromFilesStructure: true
-
-    === ALERT RULES PROVISIONING (provisioning/alerting/*.yml) ===
-    Structure:
-      apiVersion: 1
-      groups:
-        - orgId: 1
-          name: alert-group
-          folder: alerts
-          interval: 1m
-          rules:
-            - uid: rule-uid
-              title: High Error Rate
-              condition: C
-              data: [...]
-              for: 5m
-              labels:
-                severity: critical
-
-    Detect dashboard type from context:
-    - **Infrastructure**: Node Exporter metrics (CPU, memory, disk, network), system overview
-    - **Application**: HTTP request rate/duration/errors (RED method), custom app metrics
-    - **Kubernetes**: Pod resource usage, deployment replicas, namespace overview, cluster health
-    - **Database**: Query latency, connections, replication lag, cache hit ratio
-    - **Logs**: Loki log viewer panels, log volume over time, error rate from logs
-    - **Business**: Custom metrics, SLI/SLO dashboards, error budgets
+    Output ONLY the raw Grafana dashboard JSON object — no code fences, no "files" wrapper, no markdown. Start directly with {.
   bestPractices:
-    - Use template variables for datasource, namespace, instance, and job filtering ($datasource, $namespace)
-    - Organize panels in collapsible rows with clear section titles for logical grouping
-    - Set appropriate refresh intervals (30s for real-time, 5m for overview dashboards)
-    - Use consistent color schemes and thresholds across panels (green/yellow/red for health indicators)
-    - Include description and tags for dashboard discoverability and organization
-    - Define thresholds on stat and gauge panels for visual alerting at a glance
-    - Use consistent gridPos values — standard layout is 24 units wide (w:12 for half-width, w:24 for full)
-    - Include datasource references using variable syntax (${datasource}) in all query targets
-    - Use appropriate panel units (reqps, bytes, percent, short, s, ms) for meaningful axis labels
-    - Set legendFormat with template labels ({{instance}}, {{pod}}) for readable legends
-    - Use annotations to mark deployments, incidents, and events on time-series panels
-    - "Configure datasource provisioning with access: proxy to route queries through Grafana server"
-    - Use dashboard providers to auto-load dashboards from filesystem for GitOps workflows
-    - Create alert rules with appropriate for duration (5m minimum) to avoid flapping
+    - Organize panels into logical rows with descriptive titles
+    - Use template variables for datasource, namespace, and instance selection
+    - Set appropriate panel widths (24-column grid) and heights
+    - Use $__interval for auto-adjusting query resolution
+    - Include null value handling (connect null values, show zero)
+    - Set meaningful color thresholds for gauge and stat panels
+    - Use legends with relevant label values, not raw metric names
+    - Add panel descriptions explaining what each metric represents
+    - Use dashboard links for cross-referencing related dashboards
+    - Set refresh interval appropriate to the monitoring use case (5s-5m)
+    - Apply consistent color schemes across related panels
+    - Use overrides for per-series styling when needed
+    - Include annotations for deployment markers when applicable
   context7Libraries:
     - name: grafana
-      query: "Grafana dashboard JSON model panels timeseries stat gauge table gridPos, template variables datasource query custom interval, provisioning datasources YAML configuration, provisioning dashboards provider filesystem auto-load, Grafana Unified Alerting rules provisioning, fieldConfig defaults overrides thresholds units, annotations deployment markers"
+      query: "Grafana dashboard JSON model, panel types time series stat gauge table, templating variables, PromQL queries, datasource configuration"
 
 files:
-  - path: "{outputPath}/dashboards/dashboard.json"
+  - path: "{outputPath}/dashboard.json"
     format: raw
-    conditional: true
-  - path: "{outputPath}/provisioning/datasources/datasource.yml"
-    format: raw
-    conditional: true
-  - path: "{outputPath}/provisioning/dashboards/provider.yml"
-    format: raw
-    conditional: true
-  - path: "{outputPath}/provisioning/alerting/rules.yml"
-    format: raw
-    conditional: true
-  - path: "{outputPath}/dashboards/overview.json"
-    format: raw
-    conditional: true
 
 detection:
-  paths: ["grafana/*.json", "grafana/dashboards/*.json", "dashboards/*.json", "provisioning/datasources/*.yml", "provisioning/dashboards/*.yml", "grafana/provisioning/**/*.yml"]
+  paths: ["**/dashboards/*.json", "**/grafana/*.json", "dashboard.json"]
   updateMode: true
 
 verification:
   structural:
+    - path: "title"
+      required: true
+      message: "Grafana dashboard must have a title"
     - path: "panels"
-      required: false
-      message: "Dashboard should have a 'panels' array"
+      required: true
+      message: "Grafana dashboard must have panels"
 
 permissions:
   filesystem: write
@@ -178,11 +74,11 @@ permissions:
   network: none
 
 scope:
-  write: ["dashboards/*.json", "grafana/**/*.json", "provisioning/**/*.yml", "provisioning/**/*.yaml", "**/*.json", "**/*.yml"]
+  write: ["dashboard.json", "**/dashboards/*.json", "**/grafana/*.json"]
 
 risk:
   level: LOW
-  rationale: "Dashboard and provisioning changes are visual — they do not affect data pipelines or applications"
+  rationale: "Dashboard configurations do not affect application behavior"
 
 execution:
   mode: generate
@@ -198,7 +94,7 @@ update:
 
 ## Prompt
 
-You are a Grafana expert specializing in dashboard design, provisioning configuration, template variables, and alert rules.
+You are a Grafana dashboard expert specializing in observability, monitoring visualization, and PromQL.
 
 {outputGuidance}
 
@@ -211,7 +107,6 @@ Project context: {projectContext}
 
 ## Keywords
 
-grafana, dashboard, panel, visualization, metrics, monitoring,
-prometheus, timeseries, stat, gauge, alert, provisioning,
-datasource, template-variable, loki, elasticsearch, row,
-table, heatmap, annotation, threshold
+grafana, dashboard, panel, visualization, monitoring, observability,
+prometheus, loki, influxdb, datasource, template, variable, graph,
+time-series, stat, gauge, heatmap, table, alert, annotation
