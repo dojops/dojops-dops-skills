@@ -1,6 +1,6 @@
 ---
 dops: v2
-kind: tool
+kind: skill
 
 meta:
   name: jenkins
@@ -16,8 +16,8 @@ context:
   outputGuidance: |
     CRITICAL: You MUST output a JSON object with a "files" key. Each key in "files" is the exact file path, each value is the file content as a string.
 
-    This module generates Jenkins Configuration as Code (JCasC) YAML and Job DSL Groovy — NOT Jenkinsfiles.
-    Jenkinsfile pipeline syntax is handled by the built-in jenkinsfile module.
+    This skill generates Jenkins Configuration as Code (JCasC) YAML and Job DSL Groovy — NOT Jenkinsfiles.
+    Jenkinsfile pipeline syntax is handled by the built-in jenkinsfile skill.
 
     Determine the configuration type from the user's request:
 

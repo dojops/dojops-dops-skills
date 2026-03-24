@@ -1,24 +1,24 @@
-# dojops-dops-modules
+# dojops-dops-skills
 
-[![CI](https://github.com/dojops/dojops-dops-modules/actions/workflows/ci.yml/badge.svg)](https://github.com/dojops/dojops-dops-modules/actions/workflows/ci.yml)
-[![Modules](https://img.shields.io/badge/tools-36-00e5ff)](https://github.com/dojops/dojops-dops-modules)
+[![CI](https://github.com/dojops/dojops-dops-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/dojops/dojops-dops-skills/actions/workflows/ci.yml)
+[![Skills](https://img.shields.io/badge/skills-38-00e5ff)](https://github.com/dojops/dojops-dops-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DojOps](https://img.shields.io/badge/DojOps-v1.0.5-blue)](https://github.com/dojops/dojops)
 
-Community collection of `.dops v2` modules files for [DojOps](https://github.com/dojops/dojops) — the AI DevOps automation engine.
+Community collection of `.dops v2` skill files for [DojOps](https://github.com/dojops/dojops) — the AI DevOps automation engine.
 
 ## Overview
 
-This repository contains 36 `.dops v2` module files across 5 categories:
+This repository contains 38 `.dops v2` skill files across 5 categories:
 
-- **13 built-in modules** — Copies of the modules shipped with DojOps
-- **24 community modules** — Additional DevOps modules for CI/CD, containers, monitoring, and security
+- **13 built-in skills** — Copies of the skills shipped with DojOps
+- **25 community skills** — Additional DevOps skills for CI/CD, containers, monitoring, and security
 
-## Module Catalog
+## Skill catalog
 
 ### Built-in (13)
 
-| Module | Description |
+| Skill | Description |
 |--------|-------------|
 | `ansible` | Ansible playbook configurations |
 | `docker-compose` | Docker Compose service definitions |
@@ -35,7 +35,7 @@ This repository contains 36 `.dops v2` module files across 5 categories:
 
 ### CI/CD & Cloud (6)
 
-| Module | Description | Risk |
+| Skill | Description | Risk |
 |--------|-------------|------|
 | `jenkins` | Declarative Jenkinsfile pipelines | LOW |
 | `circleci` | CircleCI pipeline configurations | LOW |
@@ -46,7 +46,7 @@ This repository contains 36 `.dops v2` module files across 5 categories:
 
 ### Containers & Orchestration (6)
 
-| Module | Description | Risk |
+| Skill | Description | Risk |
 |--------|-------------|------|
 | `podman` | Podman pod and container YAML | MEDIUM |
 | `docker-swarm` | Docker Swarm stack files | MEDIUM |
@@ -57,7 +57,7 @@ This repository contains 36 `.dops v2` module files across 5 categories:
 
 ### Monitoring & Logging (6)
 
-| Module | Description | Risk |
+| Skill | Description | Risk |
 |--------|-------------|------|
 | `grafana` | Grafana dashboard provisioning | LOW |
 | `elasticsearch` | Elasticsearch index templates | LOW |
@@ -68,7 +68,7 @@ This repository contains 36 `.dops v2` module files across 5 categories:
 
 ### Security & Compliance (6)
 
-| Module | Description | Risk |
+| Skill | Description | Risk |
 |--------|-------------|------|
 | `vault` | HashiCorp Vault server and policy config | HIGH |
 | `opa` | OPA Rego admission policies | LOW |
@@ -79,31 +79,31 @@ This repository contains 36 `.dops v2` module files across 5 categories:
 
 ## Installation
 
-### Install a single Module
+### Install a single skill
 
 ```bash
-dojops modules install dojops/dojops-dops-modules/ci-cd/jenkins.dops
+dojops skills install dojops/dojops-dops-skills/ci-cd/jenkins.dops
 ```
 
 ### Install from local clone
 
 ```bash
-git clone https://github.com/dojops/dojops-dops-modules.git
-dojops modules install dojops-dops-modules/ci-cd/jenkins.dops
+git clone https://github.com/dojops/dojops-dops-skills.git
+dojops skills install dojops-dops-skills/ci-cd/jenkins.dops
 ```
 
 ### Install from DojOps Hub
 
-All modules in this repository are also published to [DojOps Hub](https://hub.dojops.ai). Browse, search, and install directly:
+All skills in this repository are also published to [DojOps Hub](https://hub.dojops.ai). Browse, search, and install directly:
 
 ```bash
-dojops modules install jenkins
+dojops skills install jenkins
 ```
 
 ### Copy to your project
 
 ```bash
-cp ci-cd/jenkins.dops .dojops/tools/jenkins.dops
+cp ci-cd/jenkins.dops .dojops/skills/jenkins.dops
 ```
 
 ## Usage
@@ -123,14 +123,14 @@ dojops "Create a Vault policy for the payments team"
 
 ## .dops v2 Format
 
-Each module is a `.dops` file with YAML frontmatter and markdown body:
+Each skill is a `.dops` file with YAML frontmatter and markdown body:
 
 ```
 ---
 dops: v2
-kind: tool
+kind: skill
 meta:
-  name: tool-name
+  name: skill-name
   version: 2.0.0
   ...
 context:
@@ -148,7 +148,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full format reference.
 
 ## Contributing
 
-We welcome new modules! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on creating and submitting `.dops v2` tool files.
+We welcome new skills! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on creating and submitting `.dops v2` skill files.
 
 ## License
 
