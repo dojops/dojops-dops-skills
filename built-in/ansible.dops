@@ -1,6 +1,6 @@
 ---
 dops: v2
-kind: skill
+kind: tool
 
 meta:
   name: ansible

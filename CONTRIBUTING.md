@@ -28,7 +28,7 @@ Create `<category>/<skill-name>.dops` following the v2 format:
 ```yaml
 ---
 dops: v2
-kind: skill
+kind: tool
 
 meta:
   name: my-skill         # lowercase, hyphens only

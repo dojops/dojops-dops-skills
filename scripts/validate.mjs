@@ -65,9 +65,9 @@ function validate(filePath) {
     errors.push(`dops must be "v2", got "${fm.dops}"`);
   }
 
-  // kind
-  if (fm.kind !== "tool") {
-    errors.push(`kind must be "tool", got "${fm.kind}"`);
+  // kind — accept both "tool" (canonical in main repo) and "skill" (community alias)
+  if (fm.kind !== "tool" && fm.kind !== "skill") {
+    errors.push(`kind must be "tool" or "skill", got "${fm.kind}"`);
   }
 
   // meta
@@ -147,11 +147,15 @@ const results = files.map(validate);
 const names = new Map();
 let hasErrors = false;
 
-// Cross-file uniqueness
+// Cross-file uniqueness — allow duplicates when one copy is in built-in/
 for (const r of results) {
   if (r.name) {
     if (names.has(r.name)) {
-      r.errors.push(`Duplicate meta.name "${r.name}" (also in ${names.get(r.name)})`);
+      const existing = names.get(r.name);
+      const oneIsBuiltIn = existing.startsWith("built-in/") || r.file.startsWith("built-in/");
+      if (!oneIsBuiltIn) {
+        r.errors.push(`Duplicate meta.name "${r.name}" (also in ${existing})`);
+      }
     } else {
       names.set(r.name, r.file);
     }

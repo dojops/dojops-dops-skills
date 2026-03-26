@@ -1,37 +1,63 @@
 # dojops-dops-skills
 
 [![CI](https://github.com/dojops/dojops-dops-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/dojops/dojops-dops-skills/actions/workflows/ci.yml)
-[![Skills](https://img.shields.io/badge/skills-38-00e5ff)](https://github.com/dojops/dojops-dops-skills)
+[![Skills](https://img.shields.io/badge/skills-63-00e5ff)](https://github.com/dojops/dojops-dops-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DojOps](https://img.shields.io/badge/DojOps-v1.0.5-blue)](https://github.com/dojops/dojops)
+[![DojOps](https://img.shields.io/badge/DojOps-v1.2.1-blue)](https://github.com/dojops/dojops)
 
 Community collection of `.dops v2` skill files for [DojOps](https://github.com/dojops/dojops) — the AI DevOps automation engine.
 
 ## Overview
 
-This repository contains 38 `.dops v2` skill files across 5 categories:
+This repository contains 63 `.dops v2` skill files across 5 categories:
 
-- **13 built-in skills** — Copies of the skills shipped with DojOps
+- **38 built-in skills** — Synced from `packages/runtime/skills/` in the DojOps monorepo (v1.2.1)
 - **25 community skills** — Additional DevOps skills for CI/CD, containers, monitoring, and security
 
 ## Skill catalog
 
-### Built-in (13)
+### Built-in (38)
 
 | Skill | Description |
 |--------|-------------|
 | `ansible` | Ansible playbook configurations |
+| `argocd` | Argo CD GitOps application manifests |
+| `aws-cdk` | AWS CDK infrastructure definitions |
+| `aws-codepipeline` | AWS CodePipeline CI/CD configurations |
+| `azure-devops` | Azure DevOps pipeline definitions |
+| `bitbucket-pipelines` | Bitbucket Pipelines CI/CD configurations |
+| `cert-manager` | cert-manager Kubernetes TLS automation |
+| `circleci` | CircleCI pipeline configurations |
+| `cloudformation` | CloudFormation infrastructure templates |
+| `crossplane` | Crossplane cloud resource compositions |
 | `docker-compose` | Docker Compose service definitions |
 | `dockerfile` | Dockerfile container images |
+| `eks` | Amazon EKS cluster configurations |
+| `falco` | Falco runtime security rules |
+| `flux` | Flux GitOps toolkit configurations |
 | `github-actions` | GitHub Actions CI/CD workflows |
 | `gitlab-ci` | GitLab CI/CD pipeline configurations |
+| `grafana` | Grafana dashboard provisioning |
 | `helm` | Helm chart templates |
+| `istio` | Istio service mesh configurations |
+| `jenkinsfile` | Declarative Jenkinsfile pipelines |
 | `kubernetes` | Kubernetes deployment manifests |
+| `kustomize` | Kustomize overlay configurations |
 | `makefile` | Makefile build automation |
 | `nginx` | Nginx web server configurations |
+| `opa-gatekeeper` | OPA Gatekeeper admission policies |
+| `otel-collector` | OpenTelemetry Collector configurations |
+| `packer` | HashiCorp Packer machine image definitions |
+| `powershell` | PowerShell automation scripts |
 | `prometheus` | Prometheus monitoring configurations |
+| `pulumi` | Pulumi IaC in TypeScript |
+| `python` | Python automation scripts |
+| `shell` | Shell/Bash automation scripts |
 | `systemd` | Systemd service unit files |
 | `terraform` | Terraform infrastructure-as-code |
+| `terragrunt` | Terragrunt wrapper configurations |
+| `trivy-operator` | Trivy Operator security scanning |
+| `vault` | HashiCorp Vault server and policy config |
 
 ### CI/CD & Cloud (6)
 
@@ -55,7 +81,7 @@ This repository contains 38 `.dops v2` skill files across 5 categories:
 | `caddy` | Caddy web server Caddyfile | MEDIUM |
 | `haproxy` | HAProxy load balancer configuration | MEDIUM |
 
-### Monitoring & Logging (6)
+### Monitoring & Logging (7)
 
 | Skill | Description | Risk |
 |--------|-------------|------|
@@ -65,6 +91,7 @@ This repository contains 38 `.dops v2` skill files across 5 categories:
 | `datadog` | Datadog Agent integration config | LOW |
 | `fluentd` | Fluentd log collector configuration | LOW |
 | `jaeger` | Jaeger distributed tracing configuration | LOW |
+| `otel-collector` | OpenTelemetry Collector configurations | LOW |
 
 ### Security & Compliance (6)
 
@@ -121,14 +148,14 @@ dojops "Create a Grafana dashboard for API latency metrics"
 dojops "Create a Vault policy for the payments team"
 ```
 
-## .dops v2 Format
+## .dops v2 format
 
-Each skill is a `.dops` file with YAML frontmatter and markdown body:
+Each skill is a `.dops` file with YAML frontmatter and a markdown body:
 
 ```
 ---
 dops: v2
-kind: skill
+kind: tool
 meta:
   name: skill-name
   version: 2.0.0
