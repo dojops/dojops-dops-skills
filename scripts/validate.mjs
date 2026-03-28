@@ -65,9 +65,9 @@ function validate(filePath) {
     errors.push(`dops must be "v2", got "${fm.dops}"`);
   }
 
-  // kind — accept both "tool" (canonical in main repo) and "skill" (community alias)
-  if (fm.kind !== "tool" && fm.kind !== "skill") {
-    errors.push(`kind must be "tool" or "skill", got "${fm.kind}"`);
+  // kind — "skill" is canonical; "tool" accepted for backward compatibility
+  if (fm.kind !== "skill" && fm.kind !== "tool") {
+    errors.push(`kind must be "skill", got "${fm.kind}"`);
   }
 
   // meta
