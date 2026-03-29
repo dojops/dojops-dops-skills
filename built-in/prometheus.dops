@@ -93,7 +93,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yml", "**/*.yaml"]
+  write: ["prometheus.yml", "prometheus.yaml", "alert-rules.yml", "alert-rules.yaml", "recording-rules.yml", "recording-rules.yaml", "prometheus/**/*.yml", "prometheus/**/*.yaml", "rules/**/*.yml", "rules/**/*.yaml"]
 
 risk:
   level: LOW

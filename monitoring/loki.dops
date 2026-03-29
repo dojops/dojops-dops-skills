@@ -232,7 +232,7 @@ permissions:
   network: none
 
 scope:
-  write: ["loki-config.yaml", "loki.yaml", "loki.yml", "promtail-config.yaml", "promtail.yaml", "promtail.yml", "loki-rules.yaml", "loki-alerts.yaml", "**/*.yaml"]
+  write: ["loki-config.yaml", "loki.yaml", "loki.yml", "promtail-config.yaml", "promtail.yaml", "promtail.yml", "loki-rules.yaml", "loki-alerts.yaml", "loki/**/*.yaml", "loki/**/*.yml"]
 
 risk:
   level: LOW

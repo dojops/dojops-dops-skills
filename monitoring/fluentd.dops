@@ -150,7 +150,7 @@ permissions:
   network: none
 
 scope:
-  write: ["fluent.conf", "fluentd.conf", "td-agent.conf", "conf.d/*.conf", "fluentd/*.conf", "**/*.conf"]
+  write: ["fluent.conf", "fluentd.conf", "td-agent.conf", "conf.d/*.conf", "fluentd/*.conf"]
 
 risk:
   level: LOW

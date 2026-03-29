@@ -183,7 +183,7 @@ detection:
 
 verification:
   binary:
-    command: "trivy config --config {entryFile} --help || true"
+    command: "trivy config --config {entryFile} --help"
     parser: generic-stderr
     timeout: 30000
     cwd: output

@@ -108,7 +108,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/cert-manager/**/*.yaml", "**/cert-manager/**/*.yml"]
+  write: ["cert-manager/**/*.yaml", "cert-manager/**/*.yml", "**/cert-manager/**/*.yaml", "**/cert-manager/**/*.yml", "clusterissuer.yaml", "issuer.yaml", "certificate.yaml", "cert-manager.yaml"]
 
 risk:
   level: LOW

@@ -141,7 +141,7 @@ permissions:
   network: none
 
 scope:
-  write: [".sops.yaml", "**/.sops.yaml", "secrets.yaml", "secrets.env", "secrets.json", "**/secrets.*"]
+  write: [".sops.yaml", "**/.sops.yaml", "secrets.yaml", "secrets.env", "secrets.json"]
 
 risk:
   level: LOW

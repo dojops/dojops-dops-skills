@@ -101,7 +101,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/kustomization.yaml", "**/*.yaml", "**/*.yml", "**/base/**", "**/overlays/**", "**/components/**"]
+  write: ["kustomization.yaml", "**/kustomization.yaml", "base/**/*.yaml", "base/**/*.yml", "overlays/**/*.yaml", "overlays/**/*.yml", "components/**/*.yaml", "components/**/*.yml"]
 
 risk:
   level: LOW

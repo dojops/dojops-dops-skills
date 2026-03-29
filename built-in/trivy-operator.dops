@@ -99,7 +99,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/trivy-operator/**/*.yaml", "**/trivy/**/*.yaml"]
+  write: ["trivy-operator/**/*.yaml", "trivy-operator/**/*.yml", "trivy/**/*.yaml", "trivy/**/*.yml", "**/trivy-operator/**/*.yaml", "**/trivy/**/*.yaml"]
 
 risk:
   level: LOW

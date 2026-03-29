@@ -188,7 +188,7 @@ permissions:
   network: none
 
 scope:
-  write: ["jaeger-config.yaml", "jaeger.yaml", "jaeger.yml", "otel-collector-config.yaml", "otel-collector.yaml", "sampling-strategies.json", "storage-config.yaml", "**/*.yaml", "**/*.json"]
+  write: ["jaeger-config.yaml", "jaeger.yaml", "jaeger.yml", "otel-collector-config.yaml", "otel-collector.yaml", "sampling-strategies.json", "storage-config.yaml", "jaeger/**/*.yaml", "jaeger/**/*.json"]
 
 risk:
   level: LOW

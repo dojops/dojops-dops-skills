@@ -65,8 +65,8 @@ function validate(filePath) {
     errors.push(`dops must be "v2", got "${fm.dops}"`);
   }
 
-  // kind — "skill" is canonical; "tool" accepted for backward compatibility
-  if (fm.kind !== "skill" && fm.kind !== "tool") {
+  // kind must be "skill" — legacy "tool" format is not supported
+  if (fm.kind !== "skill") {
     errors.push(`kind must be "skill", got "${fm.kind}"`);
   }
 
@@ -147,13 +147,17 @@ const results = files.map(validate);
 const names = new Map();
 let hasErrors = false;
 
-// Cross-file uniqueness — allow duplicates when one copy is in built-in/
+// Cross-file uniqueness — community skills may share a name with built-in counterparts,
+// but warn so contributors know they are shadowing a built-in skill.
+const warnings = [];
 for (const r of results) {
   if (r.name) {
     if (names.has(r.name)) {
       const existing = names.get(r.name);
       const oneIsBuiltIn = existing.startsWith("built-in/") || r.file.startsWith("built-in/");
-      if (!oneIsBuiltIn) {
+      if (oneIsBuiltIn) {
+        warnings.push(`WARN  ${r.file} shadows built-in skill "${r.name}" (from ${existing})`);
+      } else {
         r.errors.push(`Duplicate meta.name "${r.name}" (also in ${existing})`);
       }
     } else {
@@ -172,6 +176,13 @@ for (const r of results) {
     }
   } else {
     console.log(`PASS  ${r.file}`);
+  }
+}
+
+if (warnings.length > 0) {
+  console.log("");
+  for (const w of warnings) {
+    console.log(w);
   }
 }
 

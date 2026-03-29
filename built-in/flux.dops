@@ -109,7 +109,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/flux-system/**/*.yaml", "**/flux-system/**/*.yml"]
+  write: ["flux-system/**/*.yaml", "flux-system/**/*.yml", "**/flux-system/**/*.yaml", "**/flux-system/**/*.yml"]
 
 risk:
   level: MEDIUM

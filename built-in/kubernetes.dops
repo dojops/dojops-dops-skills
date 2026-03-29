@@ -137,7 +137,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml"]
+  write: ["*.yaml", "*.yml", "k8s/**/*.yaml", "k8s/**/*.yml", "kubernetes/**/*.yaml", "kubernetes/**/*.yml", "manifests/**/*.yaml", "manifests/**/*.yml", "deploy/**/*.yaml", "deploy/**/*.yml"]
 
 risk:
   level: MEDIUM

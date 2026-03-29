@@ -100,7 +100,7 @@ permissions:
   network: none
 
 scope:
-  write: ["elasticsearch.yml", "elasticsearch.yaml", "elasticsearch/*.json", "elasticsearch/*.yml", "**/*.json", "**/*.yml"]
+  write: ["elasticsearch.yml", "elasticsearch.yaml", "elasticsearch/*.json", "elasticsearch/*.yml", "elasticsearch/**/*.json", "elasticsearch/**/*.yml"]
 
 risk:
   level: LOW

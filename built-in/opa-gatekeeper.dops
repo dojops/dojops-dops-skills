@@ -129,7 +129,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/gatekeeper/**/*.yaml", "**/policies/**/*.yaml"]
+  write: ["gatekeeper/*.yaml", "gatekeeper/*.yml", "policies/*.yaml", "policies/*.yml", "**/gatekeeper/**/*.yaml", "**/policies/**/*.yaml"]
 
 risk:
   level: MEDIUM

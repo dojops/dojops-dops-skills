@@ -134,7 +134,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/crossplane/**/*.yaml", "**/crossplane/**/*.yml"]
+  write: ["crossplane/**/*.yaml", "crossplane/**/*.yml", "**/crossplane/**/*.yaml", "**/crossplane/**/*.yml"]
 
 risk:
   level: MEDIUM

@@ -77,7 +77,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/*.json"]
+  write: ["template.yaml", "template.yml", "cfn-*.yaml", "cfn-*.yml", "cloudformation/*.yaml", "cloudformation/*.yml", "*.cfn.yaml", "*.cfn.yml"]
 
 risk:
   level: MEDIUM

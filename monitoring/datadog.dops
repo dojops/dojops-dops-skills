@@ -109,7 +109,7 @@ permissions:
   network: none
 
 scope:
-  write: ["datadog.yaml", "datadog/*.yaml", "datadog/conf.d/*.yaml", "conf.d/*.yaml", "monitors.json", "**/*.yaml"]
+  write: ["datadog.yaml", "datadog/*.yaml", "datadog/conf.d/*.yaml", "conf.d/*.yaml", "monitors.json", "datadog/**/*.yaml"]
 
 risk:
   level: LOW

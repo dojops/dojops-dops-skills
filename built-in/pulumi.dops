@@ -86,7 +86,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.ts", "**/*.py", "Pulumi.yaml", "Pulumi.*.yaml", "**/requirements.txt", "**/package.json", "**/tsconfig.json"]
+  write: ["index.ts", "__main__.py", "Pulumi.yaml", "Pulumi.*.yaml", "requirements.txt", "package.json", "tsconfig.json"]
 
 risk:
   level: MEDIUM

@@ -88,7 +88,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.ts", "cdk.json", "tsconfig.json", "**/bin/**", "**/lib/**"]
+  write: ["bin/**/*.ts", "lib/**/*.ts", "test/**/*.ts", "cdk.json", "tsconfig.json", "package.json"]
 
 risk:
   level: MEDIUM

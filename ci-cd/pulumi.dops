@@ -72,13 +72,22 @@ detection:
   paths: ["Pulumi.yaml", "Pulumi.yml", "Pulumi.*.yaml"]
   updateMode: true
 
+verification:
+  structural:
+    - path: "name"
+      required: true
+      message: "Pulumi.yaml must have a 'name' field"
+    - path: "runtime"
+      required: true
+      message: "Pulumi.yaml must have a 'runtime' field"
+
 permissions:
   filesystem: write
   child_process: required
   network: none
 
 scope:
-  write: ["**/*.ts", "**/*.py", "Pulumi.yaml", "Pulumi.*.yaml", "**/requirements.txt", "**/package.json", "**/tsconfig.json"]
+  write: ["index.ts", "__main__.py", "Pulumi.yaml", "Pulumi.*.yaml", "requirements.txt", "package.json", "tsconfig.json"]
 
 risk:
   level: MEDIUM

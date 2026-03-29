@@ -101,7 +101,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yaml", "**/*.yml", "**/*.tpl", "**/*.txt", "**/*.json"]
+  write: ["Chart.yaml", "values.yaml", "values-*.yaml", "templates/**/*.yaml", "templates/**/*.yml", "templates/**/*.tpl", "charts/**/*.yaml", "NOTES.txt", "tests/**/*.yaml"]
 
 risk:
   level: MEDIUM

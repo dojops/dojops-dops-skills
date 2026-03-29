@@ -108,7 +108,7 @@ permissions:
   network: none
 
 scope:
-  write: ["**/*.yml", "**/*.yaml", "**/*.j2", "**/*.cfg", "**/*.ini"]
+  write: ["*.yml", "*.yaml", "playbooks/**/*.yml", "playbooks/**/*.yaml", "roles/**/*.yml", "roles/**/*.yaml", "tasks/**/*.yml", "group_vars/**/*.yml", "host_vars/**/*.yml", "templates/**/*.j2", "ansible.cfg", "inventory/*.ini", "inventory/*.cfg", "inventories/**/*.ini", "inventories/**/*.cfg"]
 
 risk:
   level: MEDIUM
